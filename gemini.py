@@ -21,8 +21,17 @@ def get_ai_response(prompt):
         "Gemini"
     )
 
-    if provider == "Ollama":
-        return ask_ollama(prompt)
+    try:
+
+        is_streamlit_cloud = (
+            os.getenv("STREAMLIT_SERVER_PORT") is not None
+        )
+
+        if provider == "Ollama" and not is_streamlit_cloud:
+            return ask_ollama(prompt)
+
+    except Exception:
+        pass
 
     response = model.generate_content(prompt)
     return response.text
